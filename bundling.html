@@ -24,7 +24,6 @@ body, html {
   overflow: hidden;
   font-size: 12px;
 }
-
 #grid, #pager {
   position: fixed;
   width: 100%;
@@ -45,16 +44,14 @@ body, html {
 <script src="lib/d3.min.js"></script>
 <script src="d3.parcoords.js"></script>
 <script src="lib/divgrid.js"></script>
-<p>Use this slider to change alpha/opacity. The current value is <strong id="alpha-opacity">0.3</strong>
-<input type="range" min="0" max="1" value="0.3" step="0.01" id="compositing-opacity">
-</p>
+<script src="lib/sylvester.js"></script>
 <div id="example" class="parcoords" style="height:240px;"></div>
 <div id="grid"></div>
 <div id="pager"></div>
 <script id="brushing">
 
 var parcoords = d3.parcoords()("#example")
-    .alpha(0.3)
+    .alpha(0.4)
     .mode("queue") // progressive rendering
     .height(d3.max([document.body.clientHeight-326, 220]))
     .margin({
@@ -64,18 +61,16 @@ var parcoords = d3.parcoords()("#example")
       bottom: 16
     });
 
-d3.select("#compositing-opacity").on("change", function() {
-  d3.select("#alpha-opacity").text(Math.round(this.value*100)/100);
-    parcoords.alpha(this.value).render();
-});
-
 // load csv file and create the chart
-d3.csv('data/nutrients.csv', function(data) {
+d3.csv('data/cars.csv', function(data) {
   // slickgrid needs each data element to have an id
   data.forEach(function(d,i) { d.id = d.id || i; });
 
   parcoords
     .data(data)
+    .bundlingStrength(0.8) // set bundling strength
+    .smoothness(0.2)
+    .bundleDimension("cylinders")
     .render()
     .reorderable()
     .brushMode("1D-axes");
