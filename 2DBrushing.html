@@ -30,10 +30,10 @@ body, html {
 }
 #grid {
   bottom: 0;
-  height: 220px;
+  height: 300px;
 }
 #pager {
-  bottom: 226px;
+  bottom: 306px;
   height: 20px;
 }
 .slick-row:hover {
@@ -44,14 +44,6 @@ body, html {
 <script src="lib/d3.min.js"></script>
 <script src="d3.parcoords.js"></script>
 <script src="lib/divgrid.js"></script>
-<script src="lib/sylvester.js"></script>
-
-<p>Use this slider to change the curve smoothness. The current value is <strong id="smooth">0.0</strong>
-<input type="range" min="0" max="0.25" value="0.0" step="0.01" id="smoothness">
-</p><p>Use this slider to change the bundling strength. The current value is <strong id="strength">0</strong>
-<input type="range" min="0" max="1" value="0" step="0.05" id="bundling">
-</p>
-
 <div id="example" class="parcoords" style="height:240px;"></div>
 <div id="grid"></div>
 <div id="pager"></div>
@@ -69,29 +61,15 @@ var parcoords = d3.parcoords()("#example")
     });
 
 // load csv file and create the chart
-d3.csv('data/cars.csv', function(data) {
+d3.csv('data/nutrients.csv', function(data) {
   // slickgrid needs each data element to have an id
   data.forEach(function(d,i) { d.id = d.id || i; });
 
   parcoords
     .data(data)
-    .bundlingStrength(0) // set bundling strength
-    .smoothness(0)
-    .bundleDimension("cylinders")
     .render()
     .reorderable()
-    .brushMode("1D-axes");
-
-  d3.select("#smoothness").on("change", function() {
-    d3.select("#smooth").text(this.value);
-    parcoords.smoothness(this.value).render();
-  });
-  
-  // bundling strength slider
-  d3.select("#bundling").on("change", function() {
-    d3.select("#strength").text(this.value);
-    parcoords.bundlingStrength(this.value).render();
-  });
+    .brushMode("2D-strums");
 
   // setting up grid
   var column_keys = d3.keys(data[0]);
