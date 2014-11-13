@@ -49,6 +49,16 @@ body, html {
 <div id="pager"></div>
 <script id="brushing">
 
+//Flipping added when you click on an axes it gets flipped
+function flipaxis(dimension) { 
+  parcoords.svg.selectAll(".dimension")
+    .style("font-weight", "normal")
+    .filter(function(d) { return d == dimension; })
+    .style("font-weight", "bold")
+
+  parcoords.flip(dimension).updateAxes().render();
+}
+
 var parcoords = d3.parcoords()("#example")
     .alpha(0.4)
     .mode("queue") // progressive rendering
@@ -64,6 +74,7 @@ var parcoords = d3.parcoords()("#example")
 d3.csv('data/nutrients.csv', function(data) {
   // slickgrid needs each data element to have an id
   data.forEach(function(d,i) { d.id = d.id || i; });
+  var seconds1 = new Date().getTime() / 1000;
 
   parcoords
     .data(data)
@@ -71,7 +82,13 @@ d3.csv('data/nutrients.csv', function(data) {
     .reorderable()
     .brushMode("1D-axes");
 
-
+  var seconds2 = new Date().getTime() / 1000;
+  console.log(seconds2-seconds1);
+  // click label to flipping
+  parcoords.svg.selectAll(".dimension")
+    .on("click", flipaxis)
+    .selectAll(".label")
+    .style("font-size", "14px");
 
   // setting up grid
   var column_keys = d3.keys(data[0]);

@@ -49,9 +49,20 @@ body, html {
 <div id="pager"></div>
 <script id="brushing">
 
+//Flipping added when you click on an axes it gets flipped
+function removeaxis(dimension) { 
+  parcoords.svg.selectAll(".dimension")
+    .style("font-weight", "normal")
+    .filter(function(d) { return d == dimension; })
+    .style("font-weight", "bold")
+
+  parcoords.hideAxis([dimension]).updateAxes().render();
+}
+
 var parcoords = d3.parcoords()("#example")
     .alpha(0.4)
     .mode("queue") // progressive rendering
+    .composite("darker")
     .height(d3.max([document.body.clientHeight-326, 220]))
     .margin({
       top: 36,
@@ -71,7 +82,12 @@ d3.csv('data/nutrients.csv', function(data) {
     .reorderable()
     .brushMode("1D-axes");
 
-
+ 
+  // click label to remove
+  parcoords.svg.selectAll(".dimension")
+    .on("click", removeaxis)
+    .selectAll(".label")
+    .style("font-size", "14px");
 
   // setting up grid
   var column_keys = d3.keys(data[0]);
